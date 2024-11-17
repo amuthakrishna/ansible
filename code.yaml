@@ -1,0 +1,34 @@
+- name: Deploy veggold and configure Apache
+  hosts: ec2-instance
+  become: yes
+  tasks:
+    - name: Copy project files to remote using synchronize
+      synchronize:
+       src: /home/pinnacleseven/Desktop/veggold/
+       dest: /mnt/projects/
+       mode: push
+       recursive: yes
+
+        
+
+
+    - name: Copy Apache configuration for veggold
+      copy:
+        src: /home/pinnacleseven/Documents/lara-application/apache_file/veggold.conf
+        dest: /etc/apache2/sites-available/veggold.conf
+      notify: Reload Apache  
+
+    - name: Enable the veggold site
+      command: a2ensite veggold.conf
+      notify: Reload Apache
+
+    - name: Disable the default site
+      command: a2dissite 000-default.conf
+      notify: Reload Apache
+
+  handlers:
+   - name: Reload Apache
+     service:
+       name: apache2
+       state: reloaded
+
