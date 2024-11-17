@@ -1,0 +1,1 @@
+ec2-instance ansible_host=13.232.120.17 ansible_user=ubuntu ansible_private_key_file=/home/pinnacleseven/Downloads/dhinesh.pem

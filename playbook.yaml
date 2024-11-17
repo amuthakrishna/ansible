@@ -1,0 +1,79 @@
+---
+- name: Install and configure web server
+  hosts: ec2-instance
+  become: yes
+  tasks:
+   - name: Update apt cache
+     apt:
+      update_cache: yes
+
+   - name: Install Apache2
+     apt:
+      name: apache2
+      state: present
+
+   - name: Start Apache2 service
+     service:
+      name: apache2
+      state: started
+      enabled: yes 
+   
+   - name: Install software-properties-common
+     apt:
+        name: software-properties-common
+        state: present
+
+   - name: Add the Ondrej PHP repository
+     apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+
+   - name: Update apt cache
+     apt:
+        update_cache: yes
+
+   - name: Install PHP 7.1 and all required dependencies
+     apt:
+        name:
+          - php7.1
+          - php7.1-fpm
+          - php7.1-bcmath
+          - php7.1-cgi
+          - php7.1-cli
+          - php7.1-common
+          - php7.1-curl
+          - php7.1-dba
+          - php7.1-dev
+          - php7.1-json
+          - php7.1-mbstring
+          - php7.1-mcrypt
+          - php7.1-mysql
+          - php7.1-opcache
+          - php7.1-xml
+          - php7.1-xsl
+          - php7.1-zip
+          - php7.1-bz2
+          - php7.1-gd
+          - php7.1-intl
+          - php7.1-soap
+          - libapache2-mod-php7.1
+        state: present
+
+   - name: Clean apt cache
+     apt:
+        autoclean: yes
+        autoremove: yes
+
+   - name: Remove temporary files from apt cache
+     command: rm -rf /var/lib/apt/lists/*   
+     
+     
+   - name: Download Composer installer
+     shell: curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+
+   - name: Install Composer
+     shell: php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer --version=1.10.6  
+     
+
+     
+     
